@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# 🧠 SmartBank- AI Banking Chatbot
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An **AI-powered multilingual banking assistant** that combines intelligent document understanding, voice-based interaction, and smart automation to enhance user experience in modern banking systems.
 
-## Available Scripts
+This project follows a **modular architecture**, consisting of separate components for Frontend, Backend, Gen AI, and NLP, allowing independent development and seamless integration.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🏗️ Project Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The **AI Banking Chatbot System** enables users to:
+- Interact with banking information in real time.
+- Retrieve details from uploaded documents (e.g., branch data, FAQs, banking guidelines).
+- Communicate via both text and voice using natural language processing.
+- Access multilingual support powered by LLMs and AI-driven assistants.
+- Provide admins with an interface to upload Google Docs and manage branch data.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## ✨ Key Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🧑‍💼 Admin Portal
+- Secure admin login authentication.
+- Upload Google Doc URLs as a knowledge base.
+- Add and manage branch details (name, IFSC, address, etc.).
+- Simple dashboard UI built with ReactJS and CSS.
 
-### `npm run build`
+### 💬 User Chatbot
+- Real-time chat interface similar to ChatGPT layout.
+- Supports both text and voice interactions.
+- Fetches accurate responses from uploaded documents.
+- Fallback to helpdesk email if the query is not found.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🤖 Gen AI Module
+- Processes and understands content from Google Docs.
+- Uses vector embeddings for document-based question answering.
+- Supports multilingual responses.
+- Integrates with LLMs (LangChain, Gemini, or OpenAI APIs).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🗣️ NLP Module
+- Voice assistant for speech-to-text and text-to-speech conversion.
+- Multilingual input and output.
+- Smooth integration with chatbot interface.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 📁 Folder Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+ai-banking-chatbot/
+│
+├── frontend/   → ReactJS-based user interface and admin dashboard
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── ...
+│
+├── backend/    → Node.js + Express-based APIs, authentication, and database management
+│   └── README.md
+│
+├── genai/      → LLM integration and vector database generation for document answering
+│   └── README.md
+│
+├── nlp/        → Voice assistant and multilingual processing (speech-to-text / text-to-speech)
+│   └── README.md
+│
+└── README.md   → Main project overview and documentation
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## ⚙️ Setup Instructions
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🔹 Clone the Repository
+```bash
+git clone https://github.com/Aditya414singh/ai-banking-chatbot.git
+cd ai-banking-chatbot
+```
+```bash
+cd frontend
+npm install
+npm start
+```
+## System Architecture
+```bash
+                ┌──────────────────────┐
+                │        Admin         │
+                │ Upload Docs & Branch │
+                └─────────┬────────────┘
+                          │
+                          ▼
+                ┌──────────────────────┐
+                │      Backend API     │
+                │ Node.js + Express    │
+                └─────────┬────────────┘
+                          │
+         ┌────────────────┼──────────────────┐
+         ▼                ▼                  ▼
+ ┌─────────────┐   ┌──────────────┐   ┌──────────────┐
+ │   Gen AI    │   │     NLP      │   │   Database    │
+ │ Vector DB + │   │ Voice Assist │   │ (Mongo + Vec) │
+ │ LLM Answer  │   │ Multi-lang   │   │   Storage     │
+ └─────────────┘   └──────────────┘   └──────────────┘
+                          │
+                          ▼
+                ┌──────────────────────┐
+                │       Frontend       │
+                │  React Chatbot UI    │
+                └──────────────────────┘
+```
+## 🚀 Tech Stack
 
-## Learn More
+| Module              | Technologies                                         |
+| ------------------- | ---------------------------------------------------- |
+| **Frontend**        | ReactJS, Plain CSS                                   |
+| **Backend**         | Node.js, Express.js, MongoDB                         |
+| **Gen AI**          | LangChain, OpenAI API / Gemini API, Pinecone / FAISS |
+| **NLP**             | Speech Recognition, TTS, Google Cloud APIs           |
+| **Database**        | MongoDB / Vector DB (depending on module)            |
+| **Version Control** | Git + GitHub                                         |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🎯 Goals
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Build a **secure, multilingual, document-aware chatbot** for banking.  
+- Enable **document-based question answering** using LLM + vector databases.  
+- Support **text and voice interactions** with natural language understanding.  
+- Provide a **modern, intuitive admin dashboard** for content management.  
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
