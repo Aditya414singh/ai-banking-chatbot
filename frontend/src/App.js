@@ -32,6 +32,7 @@ import AdminPage from "./pages/AdminPage";
 import UserPage from "./pages/UserPage";
 import AdminLogin from "./pages/AdminLogin";
 import "./App.css";
+import HomePage from "./components/Home/HomePage";
 
 function App() {
   return (
@@ -41,7 +42,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<h2 className="home">Welcome to AI Banking Chatbot 💬</h2>}
+            element={<HomePage/>}
           />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminPage />} />
