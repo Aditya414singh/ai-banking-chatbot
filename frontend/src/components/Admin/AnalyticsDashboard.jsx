@@ -37,12 +37,6 @@ const AnalyticsDashboard = () => {
     },
   ];
 
-  const chatIntentsData = {
-    labels: ["Check Balance", "Loan Inquiry", "Transfer Funds", "Nearest ATM", "Other"],
-    data: [35, 25, 20, 10, 10],
-    title: "Top 5 User Intents (%)"
-  };
-
   const handoffRateData = {
     labels: ["Bot Resolved", "Human Handoff (Failure)", "Human Handoff (Intentional)"],
     data: [88.5, 7.5, 4.0],

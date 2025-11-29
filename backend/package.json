@@ -22,22 +22,3 @@
     "nodemon": "^3.0.2"
   }
 }
-
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "Backend module. This folder contains Node.js + Express APIs and database logic.",
-  "main": "app.js",
-  "type": "module",
-  "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "googleapis": "^166.0.0"
-  }
-}
