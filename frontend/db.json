@@ -1,17 +1,45 @@
 {
-  "admins": [
+  "admin": {
+    "username": "admin123",
+    "password": "smartbank@321"
+  },
+  "branches": [
     {
       "id": "1",
-      "username": "admin",
-      "password": "1234",
-      "token": "fake-jwt-token-123"
-    }
-  ],
-  "docs": [
+      "name": "Smart Bank – Lucknow Main Branch",
+      "ifsc": "SBIN0004501",
+      "address": "Hazratganj, Lucknow, Uttar Pradesh"
+    },
     {
-      "id": "1",
-      "link": "https://docs.google.com/document/d/sampledoc1"
+      "id": "2",
+      "name": "Smart Bank – Mumbai Central Branch",
+      "ifsc": "SBIN0007892",
+      "address": "Churchgate, Mumbai, Maharashtra"
+    },
+    {
+      "id": "3",
+      "name": "Smart Bank – Pune Hinjewadi Branch",
+      "ifsc": "SBIN0012457",
+      "address": "Phase 2, Hinjewadi IT Park, Pune"
+    },
+    {
+      "id": "5d5e",
+      "name": "aditya",
+      "ifsc": "57557",
+      "address": "688668"
+    },
+    {
+      "id": "50e6",
+      "name": "amol",
+      "ifsc": "577277",
+      "address": "454656"
+    },
+    {
+      "id": "daa3",
+      "name": "liushkughukriyahfiure",
+      "ifsc": "rfsgr",
+      "address": "sfe"
     }
   ],
-  "branches": []
+  "docs": []
 }
