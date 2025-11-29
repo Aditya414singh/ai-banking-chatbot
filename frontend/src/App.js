@@ -24,15 +24,17 @@
 
 
 
-import React from "react";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Common/Navbar";
 import Footer from "./components/Common/Footer";
 import AdminPage from "./pages/AdminPage";
-import UserPage from "./pages/UserPage";
+
 import AdminLogin from "./pages/AdminLogin";
 import "./App.css";
 import HomePage from "./components/Home/HomePage";
+import UserBranch from "./pages/UserBranch";
+import UserChat from "./pages/UserChat";
 
 function App() {
   return (
@@ -46,7 +48,8 @@ function App() {
           />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/user" element={<UserPage />} />
+          <Route path="/user/" element={<UserBranch />} />
+          <Route path="/user/chat" element={<UserChat />} />
         </Routes>
       </div>
       <Footer />
