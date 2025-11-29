@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./UserChat.css";
-
 import { useSearchParams } from "react-router-dom";
 
 const STORAGE_KEY = "astra_chats_v2";
@@ -59,7 +58,6 @@ export default function UserChat() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [copied, setCopied] = useState(false);
-  
 
   // 🔥 VOICE STATES
   const [isRecording, setIsRecording] = useState(false);
@@ -92,6 +90,7 @@ export default function UserChat() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
   }, [chats]);
 
+  // AUTO SCROLL
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats, isTyping]);
@@ -124,56 +123,70 @@ export default function UserChat() {
   // --------------------------
   // SEND MESSAGE
   // --------------------------
-const handleSend = () => {
-  if (!input.trim()) return;
+  const handleSend = async () => {
+    const textToSend = input.trim();
+    if (!textToSend) return;
 
-  const userMsg = {
-    id: uid(),
-    from: "user",
-    text: input.trim(),
-    ts: nowISO(),
-  };
+    // 1️⃣ Add USER message (QUESTION) → RIGHT
+    const userMsg = {
+      id: uid(),
+      from: "user",
+      text: textToSend,
+      ts: nowISO(),
+    };
 
-  updateCurrentChat((c) => ({
-    ...c,
-    messages: [...c.messages, userMsg],
-  }));
+    updateCurrentChat((c) => ({
+      ...c,
+      messages: [...c.messages, userMsg],
+    }));
 
-  const userText = input.trim();
-  setInput("");
-
-  if (textareaRef.current) {
-    textareaRef.current.style.height = "auto";
-  }
-
-  simulateReply(userText);
-};
-
-
-
-  // SIMULATED BOT REPLY
-  const simulateReply = (userText) => {
+    setInput("");
     setIsTyping(true);
+    setTimeout(async() => {
+    try {
+      // 2️⃣ Call backend to get response
+      const res = await fetch("http://localhost:5002/api/google-doc");
+      console.log("Fetching from backend:", res);
+      const data = await res.json();
 
-    setTimeout(() => {
-      const reply = {
+      const botText =
+        data.text || "Sorry, I couldn't fetch the document information.";
+
+      // 3️⃣ Add BOT message (RESPONSE) → LEFT
+      const botMsg = {
         id: uid(),
         from: "bot",
-        text: `Astra: "${userText}" for branch ${IFSC}`,
+        text: botText,
         ts: nowISO(),
       };
 
       updateCurrentChat((c) => ({
         ...c,
-        messages: [...c.messages, reply],
+        messages: [...c.messages, botMsg],
       }));
+    } catch (error) {
+      console.error("Error fetching Google Doc text:", error);
 
+      const errorMsg = {
+        id: uid(),
+        from: "bot",
+        text:
+          "Oops, something went wrong while fetching the Google Doc. Please try again.",
+        ts: nowISO(),
+      };
+
+      updateCurrentChat((c) => ({
+        ...c,
+        messages: [...c.messages, errorMsg],
+      }));
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
+    }, 10000);
   };
 
   // --------------------------
-  // GROUP MESSAGES
+  // GROUP MESSAGES BY DATE
   // --------------------------
   const groupedMessages = (messages = []) => {
     let last = null;
@@ -227,7 +240,7 @@ const handleSend = () => {
         formData.append("file", audioBlob);
         formData.append("lang", language);
 
-        // ---- NLP BACKEND (your friend will implement) ----
+        // ---- STT BACKEND ----
         const res = await fetch("http://localhost:5001/stt", {
           method: "POST",
           body: formData,
@@ -311,8 +324,7 @@ const handleSend = () => {
                 </button>
                 <button
                   onClick={(e) => {
-
-e.stopPropagation();
+                    e.stopPropagation();
                     if (window.confirm("Delete this chat?")) deleteChat(c.id);
                   }}
                 >
@@ -348,7 +360,9 @@ e.stopPropagation();
               return (
                 <div
                   key={m.id}
-                  className={`msg-row ${m.from === "user" ? "right" : "left"}`}
+                  className={`msg-row ${
+                    m.from === "user" ? "right" : "left"
+                  }`}
                 >
                   <div className={`msg-bubble ${m.from}`}>
                     <p>{m.text}</p>
@@ -377,7 +391,7 @@ e.stopPropagation();
               );
             })}
 
-          {/* Typing shimmer */}
+          {/* Typing shimmer (BOT → LEFT) */}
           {isTyping && (
             <div className="msg-row left">
               <div className="typing-bubble">
