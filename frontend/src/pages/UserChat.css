@@ -184,13 +184,24 @@
 .listening-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #fef9c3;
-  padding: 10px 14px;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(0, 150, 255, 0.15);
+  margin: 10px auto;
   width: fit-content;
-  margin: 0 auto;
-  border: 1px solid #facc15;
+}
+.mic-pulse {
+  width: 12px;
+  height: 12px;
+  background: #0099ff;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
 }
 
 .wave {
@@ -283,4 +294,3 @@ textarea {
   padding: 12px 16px;
   border-radius: 10px;
 }
-
