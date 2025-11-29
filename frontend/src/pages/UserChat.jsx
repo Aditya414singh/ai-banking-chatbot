@@ -279,9 +279,7 @@ export default function UserChat() {
   // -----------------------------------------------------------
   const speakText = async (text) => {
     const res = await fetch(
-      `http://localhost:5001/tts?text=${encodeURIComponent(
-        text
-      )}&lang=${language}`
+      `http://localhost:5001/tts?text=${encodeURIComponent(text)}&lang=${language}`
     );
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);

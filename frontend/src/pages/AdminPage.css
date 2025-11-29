@@ -1,80 +1,4 @@
-/* .admin-dashboard {
-  max-width: 700px;
-  margin: 30px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
 
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logout-btn {
-  background: #c0392b;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.logout-btn:hover {
-  background: #e74c3c;
-}
-
-.tab-buttons {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-}
-
-.tab-buttons button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #eee;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.tab-buttons button.active {
-  background-color: #002244;
-  color: white;
-}
-
-.upload-container, .branch-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.upload-container input, .branch-container input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.upload-container button, .branch-container button {
-  background: #002244;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.msg {
-  margin-top: 10px;
-  font-weight: 500;
-} */
-
-
-
-
-/* ==== ADMIN DASHBOARD MAIN ==== */
 .admin-dashboard {
   max-width: 850px;
   margin: 40px auto;
@@ -170,7 +94,7 @@
   font-size: 1.2rem;
 }
 
-/* ==== INPUTS ==== */
+
 .upload-container input,
 .branch-container input {
   padding: 12px 14px;
@@ -187,7 +111,7 @@
   box-shadow: 0 0 5px rgba(0, 34, 68, 0.3);
 }
 
-/* ==== BUTTONS ==== */
+
 .upload-container button,
 .branch-container button {
   background: linear-gradient(90deg, #002244, #003366);
@@ -207,7 +131,7 @@
   transform: translateY(-1px);
 }
 
-/* ==== MESSAGE ==== */
+
 .msg {
   margin-top: 10px;
   font-weight: 500;
@@ -215,7 +139,7 @@
   text-align: center;
 }
 
-/* ==== RESPONSIVE ==== */
+
 @media (max-width: 768px) {
   .admin-dashboard {
     width: 90%;
@@ -231,4 +155,25 @@
     flex-direction: column;
     gap: 10px;
   }
+}
+
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f7fa; 
+}
+
+.admin-sidebar-nav { 
+    width: 100wh;
+   
+
+    background-color: #ffffff; 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    
+}
+
+.admin-dashboard-main { 
+    flex-grow: 1;
+    padding: 30px;
 }

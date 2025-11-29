@@ -1,0 +1,20 @@
+.kpi-card-grid { /* Grid layout for the KPI cards */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.chart-section { /* Grid layout for the charts */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.chart-item { /* Styling for the chart containers */
+    background-color: white;
+    padding: 20px;
+    /* ... other chart-item styles */
+}
+/* ... data-table-section and review-table styles */
