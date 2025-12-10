@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./UserChat.css";
+
 import { useSearchParams } from "react-router-dom";
 
 const STORAGE_KEY = "astra_chats_v2";
@@ -63,8 +64,12 @@ export default function UserChat() {
   const [isRecording, setIsRecording] = useState(false);
   const [language, setLanguage] = useState("hi-IN");
   const [listening, setListening] = useState(false);
+  // For fallback/still-available MediaRecorder code
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+
+  // For SpeechRecognition (Web Speech API)
+  const recognitionRef = useRef(null);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -90,7 +95,6 @@ export default function UserChat() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
   }, [chats]);
 
-  // AUTO SCROLL
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats, isTyping]);
@@ -123,70 +127,149 @@ export default function UserChat() {
   // --------------------------
   // SEND MESSAGE
   // --------------------------
-  const handleSend = async () => {
-    const textToSend = input.trim();
-    if (!textToSend) return;
+  const handleSend = () => {
+  if (!input.trim()) return;
 
-    // 1️⃣ Add USER message (QUESTION) → RIGHT
-    const userMsg = {
-      id: uid(),
-      from: "user",
-      text: textToSend,
-      ts: nowISO(),
-    };
+  let userText = input.trim();       // save message
+  setInput("");                        
+    console.log("User input:", userText);  // log input here
+    console.log("input is", input);
+  const userMsg = {
+    id: uid(),
+    from: "user",
+    text: userText,
+    ts: nowISO(),
+  };
+
+  updateCurrentChat((c) => ({
+    ...c,
+    messages: [...c.messages, userMsg],
+  }));
+
+  simulateReply(userText);
+
+
+};
+
+
+  // SIMULATED BOT REPLY
+  // This function now also triggers TTS playback for the bot reply
+//   const simulateReply = (userText) => {
+//   setIsTyping(true);
+
+//   setTimeout(() => {
+//     const reply = {
+//       id: uid(),
+//       from: "bot",
+//       text: `Astra: "${userText}" for branch ${IFSC}`,
+//       ts: nowISO(),
+//     };
+
+//     updateCurrentChat((c) => ({
+//       ...c,
+//       messages: [...c.messages, reply],
+//     }));
+
+//     setIsTyping(false);
+
+//     // stop any previous speech
+//     window.speechSynthesis.cancel();
+
+//     // speak new reply
+//     speakText(reply.text);
+//   }, 1000);
+// };
+
+
+//   const simulateReply = async (userText) => {
+//   setIsTyping(true);
+
+//   try {
+//     const res = await fetch("http://localhost:5002/api/google-doc"); // FIXED ROUTE
+//     const data = await res.json();
+//     const replyText = data.text || "No content available in document.";
+
+//     const reply = {
+//       id: uid(),
+//       from: "bot",
+//       text: replyText,
+//       ts: nowISO(),
+//     };
+
+//     updateCurrentChat((c) => ({
+//       ...c,
+//       messages: [...c.messages, reply],
+//     }));
+
+//     speakText(replyText); // bot speaks
+
+//   } catch (err) {
+//     console.error("DOC API ERROR:", err);
+
+//     updateCurrentChat((c) => ({
+//       ...c,
+//       messages: [
+//         ...c.messages,
+//         {
+//           id: uid(),
+//           from: "bot",
+//           text: "Error fetching Google Doc content 😞",
+//           ts: nowISO(),
+//         },
+//       ],
+//     }));
+//   }
+
+//   setIsTyping(false);
+// };
+  const simulateReply = async (userText) => {
+  setIsTyping(true); // start loading shimmer immediately
+
+  try {
+    // Call bot immediately (no waiting here)
+    const res = await fetch("http://localhost:5002/api/google-doc");
+    const data = await res.json();
+    const replyText = data.text || "No content available in document.";
+
+    // Wait 8–10 sec before showing reply
+    setTimeout(() => {
+      const reply = {
+        id: uid(),
+        from: "bot",
+        text: replyText,
+        ts: nowISO(),
+      };
+
+      updateCurrentChat((c) => ({
+        ...c,
+        messages: [...c.messages, reply],
+      }));
+
+      setIsTyping(false); // hide loading
+
+      speakText(replyText);  // 🔊 bot speaks
+
+    }, 1000); // 9 sec delay (change 8000–10000 ms as needed)
+
+  } catch (err) {
+    console.error("DOC API ERROR:", err);
 
     updateCurrentChat((c) => ({
       ...c,
-      messages: [...c.messages, userMsg],
+      messages: [...c.messages, {
+        id: uid(),
+        from: "bot",
+        text: "Error fetching content ❗",
+        ts: nowISO(),
+      }],
     }));
 
-    setInput("");
-    setIsTyping(true);
-    setTimeout(async() => {
-    try {
-      // 2️⃣ Call backend to get response
-      const res = await fetch("http://localhost:5002/api/google-doc");
-      console.log("Fetching from backend:", res);
-      const data = await res.json();
-
-      const botText =
-        data.text || "Sorry, I couldn't fetch the document information.";
-
-      // 3️⃣ Add BOT message (RESPONSE) → LEFT
-      const botMsg = {
-        id: uid(),
-        from: "bot",
-        text: botText,
-        ts: nowISO(),
-      };
-
-      updateCurrentChat((c) => ({
-        ...c,
-        messages: [...c.messages, botMsg],
-      }));
-    } catch (error) {
-      console.error("Error fetching Google Doc text:", error);
-
-      const errorMsg = {
-        id: uid(),
-        from: "bot",
-        text:
-          "Oops, something went wrong while fetching the Google Doc. Please try again.",
-        ts: nowISO(),
-      };
-
-      updateCurrentChat((c) => ({
-        ...c,
-        messages: [...c.messages, errorMsg],
-      }));
-    } finally {
-      setIsTyping(false);
-    }
-    }, 10000);
-  };
+    setIsTyping(false);
+  }
+};
 
   // --------------------------
-  // GROUP MESSAGES BY DATE
+  // GROUP MESSAGES
   // --------------------------
   const groupedMessages = (messages = []) => {
     let last = null;
@@ -213,9 +296,97 @@ export default function UserChat() {
   };
 
   // -----------------------------------------------------------
-  // 🎤 START RECORDING
+  // 🎤 START RECORDING — using Web Speech API (preferred)
   // -----------------------------------------------------------
-  const startRecording = async () => {
+  const startRecognition = () => {
+    // browser compatibility
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      // Browser doesn't support SpeechRecognition -> fallback to media recording + backend STT
+      console.warn("Web Speech API not supported. Falling back to recorded STT.");
+      startRecordingFallback(); // uses MediaRecorder & backend STT
+      return;
+    }
+
+    // create new instance each time to avoid stale event handlers
+    const recognition = new SpeechRecognition();
+    recognition.lang = language || "hi-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false; // one-shot recognition
+    recognition.autoStop = true;  
+    recognition.onstart = () => {
+      setListening(true);
+      setIsRecording(true);
+    };
+
+//   recognition.onresult = (event) => {
+//   const transcript = Array.from(event.results).map(r => r[0].transcript).join(" ");
+  
+//   if (!transcript.trim()) return;
+//   if (transcript.trim() === input.trim()) return; // avoid duplicate input
+
+//   setInput(transcript);
+
+//   setTimeout(() => {
+//     handleSend();
+//   }, 200);
+// };
+const handleSend = (msg) => {
+  const userText = (msg ?? input).trim();   // if msg provided use it, else input box text
+  if (!userText) return;
+
+  setInput("");   // clear field
+
+  const userMsg = {
+    id: uid(),
+    from: "user",
+    text: userText,
+    ts: nowISO(),
+  };
+
+  updateCurrentChat((c) => ({
+    ...c,
+    messages: [...c.messages, userMsg],
+  }));
+
+  simulateReply(userText);
+};
+
+
+
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      // if no-speech or not-allowed, end gracefully
+      setListening(false);
+      setIsRecording(false);
+      // optionally notify user
+      if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+        alert("Microphone access denied. Please allow microphone permission and try again.");
+      }
+    };
+
+    recognition.onend = () => {
+      // recognition ended (either completed or aborted)
+      setListening(false);
+      setIsRecording(false);
+    };
+
+    recognitionRef.current = recognition;
+    try {
+      recognition.start();
+    } catch (err) {
+      console.error("Failed to start recognition", err);
+      setListening(false);
+      setIsRecording(false);
+    }
+  };
+
+  // Fallback: Record audio, send to /stt backend (keeps your original behavior if Web Speech API unavailable)
+  const startRecordingFallback = async () => {
     setListening(true);
 
     try {
@@ -240,17 +411,24 @@ export default function UserChat() {
         formData.append("file", audioBlob);
         formData.append("lang", language);
 
-        // ---- STT BACKEND ----
-        const res = await fetch("http://localhost:5001/stt", {
-          method: "POST",
-          body: formData,
-        });
+        // ---- NLP BACKEND STT endpoint expected at localhost:5001/stt ----
+        try {
+          const res = await fetch("http://localhost:5001/stt", {
+            method: "POST",
+            body: formData,
+          });
 
-        const data = await res.json();
+          const data = await res.json();
 
-        if (data.text) {
-          setInput(data.text);
-          setTimeout(() => handleSend(), 200);
+          if (data.text) {
+            setInput(data.text);
+            setTimeout(() => handleSend(), 150);
+          } else {
+            alert("Could not transcribe audio.");
+          }
+        } catch (err) {
+          console.error("STT fallback error:", err);
+          alert("STT service unavailable.");
         }
       };
 
@@ -259,32 +437,125 @@ export default function UserChat() {
     } catch (err) {
       alert("Microphone access denied or not available.");
       setListening(false);
+      setIsRecording(false);
     }
   };
 
-  // STOP RECORDING
-  const stopRecording = () => {
+  // STOP recognition or recorder
+  const stopRecognition = () => {
+    // stop Web Speech API if running
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        // ignore
+      }
+      recognitionRef.current = null;
+    }
+
+    // stop media recorder fallback if running
     const recorder = mediaRecorderRef.current;
-    if (recorder) recorder.stop();
+    if (recorder && recorder.state !== "inactive") {
+      recorder.stop();
+      mediaRecorderRef.current = null;
+    }
+
     setIsRecording(false);
+    setListening(false);
   };
 
   const toggleRecording = () => {
-    if (isRecording) stopRecording();
-    else startRecording();
+    if (isRecording) stopRecognition();
+    else startRecognition();
   };
 
   // -----------------------------------------------------------
-  // 🔊 TTS (Speak response)
+  // 🔊 TTS (Speak response) — uses backend TTS if available,
+  // otherwise falls back to browser speechSynthesis
   // -----------------------------------------------------------
-  const speakText = async (text) => {
-    const res = await fetch(
-      `http://localhost:5001/tts?text=${encodeURIComponent(text)}&lang=${language}`
-    );
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    new Audio(url).play();
+//   const speakText = async (text) => {
+//   try {
+//     // 1️⃣ Browser SpeechSynthesis first (instant)
+//     const utter = new SpeechSynthesisUtterance(text);
+//     utter.lang = language || "en-IN";
+//     window.speechSynthesis.speak(utter);
+//     return; // <-- return here so backend won't be called
+
+//   } catch (e) {
+//     console.log("Browser TTS failed, fallback to backend...");
+//   }
+
+//   // 2️⃣ Backend fallback (slow but better voice)
+//   try {
+//     const res = await fetch(
+//       `http://localhost:5001/tts?text=${encodeURIComponent(text)}&lang=${language}`
+//     );
+//     const blob = await res.blob();
+//     const url = URL.createObjectURL(blob);
+//     new Audio(url).play();
+//   } catch (err) {
+//     console.error("TTS failed:", err);
+//   }
+// };
+//   const speakText = async (text) => {
+//   try {
+//     // 1️⃣ Instant Browser Text-to-Speech
+//     const utter = new SpeechSynthesisUtterance(text);
+//     utter.lang = language || "en-IN";
+
+//     // STOP listening while bot is speaking
+//     stopRecognition();
+
+//     // 🔥 When bot finishes speaking → start listening automatically
+//     utter.onend = () => {
+//       console.log("Bot finished speaking. Restarting mic...");
+//       startRecognition(); // <--- CONTINUOUS VOICE MODE ENABLED
+//     };
+
+//     window.speechSynthesis.cancel(); // prevent overlapping voices
+//     window.speechSynthesis.speak(utter);
+//     return;
+
+//   } catch (e) {
+//     console.log("Browser TTS failed, fallback to backend...");
+//   }
+
+//   // 2️⃣ Backend TTS fallback (if needed)
+//   try {
+//     const res = await fetch(
+//       `http://localhost:5001/tts?text=${encodeURIComponent(text)}&lang=${language}`
+//     );
+//     const blob = await res.blob();
+//     const url = URL.createObjectURL(blob);
+//     const audio = new Audio(url);
+
+//     stopRecognition();
+//     audio.play();
+
+//     // Auto-listen after backend audio plays
+//     audio.onended = () => startRecognition();
+
+//   } catch (err) {
+//     console.error("TTS fallback failed:", err);
+//     startRecognition(); // prevent stuck state
+//   }
+// };
+  const speakText = (text) => {
+  stopRecognition();  // stop listening during speech
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = language || "en-IN";
+
+  utter.onend = () => {
+    console.log("Bot finished speaking → resume mic after short delay...");
+    setTimeout(() => startRecognition(), 1500);  // 🔥 small gap avoids repeated input
   };
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utter);
+};
+
+
 
   return (
     <div className="chat-layout">
@@ -358,19 +629,14 @@ export default function UserChat() {
               return (
                 <div
                   key={m.id}
-                  className={`msg-row ${
-                    m.from === "user" ? "right" : "left"
-                  }`}
+                  className={`msg-row ${m.from === "user" ? "right" : "left"}`}
                 >
                   <div className={`msg-bubble ${m.from}`}>
                     <p>{m.text}</p>
 
                     {/* 🔊 SPEAKER BUTTON */}
                     {m.from === "bot" && (
-                      <button
-                        className="speak-btn"
-                        onClick={() => speakText(m.text)}
-                      >
+                      <button className="speak-btn" onClick={() => speakText(m.text)}>
                         🔊
                       </button>
                     )}
@@ -389,7 +655,7 @@ export default function UserChat() {
               );
             })}
 
-          {/* Typing shimmer (BOT → LEFT) */}
+          {/* Typing shimmer */}
           {isTyping && (
             <div className="msg-row left">
               <div className="typing-bubble">
@@ -431,6 +697,7 @@ export default function UserChat() {
           <button
             className={`mic-btn ${isRecording ? "active" : ""}`}
             onClick={toggleRecording}
+            title={isRecording ? "Stop listening" : "Start listening"}
           >
             🎤
           </button>
@@ -458,3 +725,5 @@ export default function UserChat() {
     </div>
   );
 }
+
+
