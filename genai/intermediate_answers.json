@@ -1,0 +1,41 @@
+{
+  "query": "Who is manager of the bank?",
+  "per_chunk": [
+    {
+      "rank": 1,
+      "answer": "kavya.sharma@smartbank.example Office hours: Mon–Fri 10:00 AM – 6:00 PM Deputy Manager (Ops): Mr. Rohan Mehta — rohan.mehta@smartbank.example Head, Customer Care: Ms. Neha Verma — neha.verma@smartbank.example Nodal Officer (Grievances): Mr. Arvind Rao — grievances@smartbank.example",
+      "evidence": "",
+      "chunk_preview": "1) Organization Snapshot * Official name: SmartBank India Ltd.\n\nHeadquarters: Mumbai, Maharashtra, India\n\nCustomer support hours (IST):\n\nMon–Fri: 9:00 AM – 7:00 PM\n\nSat: 9:00 AM – 2:00 PM\n\nSun/Bank Holidays: Closed\n\nToll\n\nfree: 1800\n\n123\n\n9876\n\nEmail: support@smartbank.example\n\nWebsite: https://www.",
+      "metadata": {
+        "source": "https://docs.google.com/document/d/1aaGCFNLHHysQAe943JGadjTmaq1Ud8TjAREALuunI1o/export?format=txt"
+      }
+    },
+    {
+      "rank": 2,
+      "answer": "not found in context",
+      "evidence": "",
+      "chunk_preview": "________________\n\n8) How-To Guides (Step-By-Step) 8.1 Open a Savings Account 1. Collect the Account Opening Form (branch or online).\n\n2. Fill personal details, nominate a beneficiary.\n\n3. Attach KYC documents (see Section 7).\n\n4. Submit to Account Executive; complete initial deposit.\n\n5. Receive acc",
+      "metadata": {
+        "source": "https://docs.google.com/document/d/1aaGCFNLHHysQAe943JGadjTmaq1Ud8TjAREALuunI1o/export?format=txt"
+      }
+    },
+    {
+      "rank": 3,
+      "answer": "Ms. Kavya Sharma; fees & limits added; IFSC example included.",
+      "evidence": "",
+      "chunk_preview": "________________\n\n13) Glossary (Short) * IFSC: Code identifying a bank branch for electronic transfers.\n\nNEFT/RTGS/IMPS: Electronic payment rails in India.\n\nLTV: Loan\n\nto\n\nValue ratio.\n\nKYC: Know Your Customer.\n\n________________\n\n14) Short Bot Instructions (System Hints) * Answer using only this doc",
+      "metadata": {
+        "source": "https://docs.google.com/document/d/1aaGCFNLHHysQAe943JGadjTmaq1Ud8TjAREALuunI1o/export?format=txt"
+      }
+    },
+    {
+      "rank": 4,
+      "answer": "IFSC: Code identifying a bank branch for electronic transfers.",
+      "evidence": "",
+      "chunk_preview": "0000\n\nCard lost? Block via app/IVR; replacement fee: ₹200\n\n________________\n\n12) FAQs (Direct Q→A for RAG) * Q: Who is manager of the bank? A: Ms. Kavya Sharma, Branch Manager, Lucknow Main Branch.\n\nQ: What is the IFSC of Lucknow Main Branch? A: SMBK0000001.\n\nQ: Savings account minimum balance? A: ₹",
+      "metadata": {
+        "source": "https://docs.google.com/document/d/1aaGCFNLHHysQAe943JGadjTmaq1Ud8TjAREALuunI1o/export?format=txt"
+      }
+    }
+  ]
+}
